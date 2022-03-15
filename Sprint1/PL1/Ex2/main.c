@@ -1,10 +1,12 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
-
+#include <sys/types.h>
+#include <sys/wait.h>
 
 int main(void) {
     printf("Im..\n"); 
+    int status;
     pid_t p1 = fork();
     if (p1 == 0){
         printf("Ill never join you!\n");
@@ -23,4 +25,8 @@ int main(void) {
             }
         }
     }
+    wait(&status);
+    wait(&status);
+    
+    return 0;
 }
