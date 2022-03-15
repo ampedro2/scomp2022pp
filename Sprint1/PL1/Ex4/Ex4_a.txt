@@ -1,0 +1,5 @@
+4
+
+a) A única variável que tem o mesmo valor em ambos os processos é a A, pois
+ao ser alterada no processo filho também vai ser alterada no processo pai.
+
