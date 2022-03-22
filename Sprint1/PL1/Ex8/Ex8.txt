@@ -1,0 +1,7 @@
+a)  Quando se executa o comando ps, o processo pai está em execução no
+código PID = 2135. O processo filho com PID = 2137 terminou bem, mas o processo filho, 
+com PID = 2136 mostra "<defunct>", por isso o processo pai não 
+recebeu o exiting status deste pocesso. 
+
+b) O processo filho torna-se um processo zombie, 
+pois continua na tabela de processos mas já não se encontra em funcionamento.
