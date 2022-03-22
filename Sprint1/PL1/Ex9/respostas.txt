@@ -1,0 +1,1 @@
+a) Não, pois a execução dos processos depende do escalonamento do cpu, ou seja, nunca conseguimos assegurar que um processo criado antes de outro possa acabar antes do mesmo e vice-versa.
