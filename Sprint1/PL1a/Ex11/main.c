@@ -12,9 +12,6 @@ int main ()
 	int i, j, max_value = 0, status;
 	int numbers[1000], result[500];
 	
-	time_t t;
-    srand((unsigned) time(&t));
-	
 	for (i = 0; i < 1000; i++){
 		numbers[i] = rand () % 256;
 		printf("%d - %d\n", i, numbers[i]);
