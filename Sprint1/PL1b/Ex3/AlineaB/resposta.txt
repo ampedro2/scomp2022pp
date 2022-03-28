@@ -1,0 +1,5 @@
+int sigaction(int sig, const struct sigaction * act, struct sigaction * oact);
+sig -> número do sinal (1 até 64)
+act -> define os detalhes do sinal (sa_handler e sa_sigaction definem a função que enviou o sinal, sa_mask é uma máscara
+que guarda os sinais a serem bloqueados e sa_flags o conjunto de flags que modificam o sinal)
+oact -> guarda a definição dos detalhes do sinal (endereço ou null)

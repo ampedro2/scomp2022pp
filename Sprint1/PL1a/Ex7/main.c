@@ -26,7 +26,7 @@ int main ()
 	n = rand () % 10000;
 	
 	pid_t p1 = fork();
-	if (p1 == 0){
+	if (p1 == 0){ /* caso o processo seja o filho, analisa a primeira metade do vetor numbers e retorna o número de vezes que o valor n foi encontrado nessa metade */
 		for (i = 0; i < ARRAY_SIZE/2-1; i++){
 			if (n == numbers[i]){
 				ntimes++;
@@ -34,19 +34,19 @@ int main ()
 		}
 		exit(ntimes);
 	}
-	else if (p1 > 0){
+	else if (p1 > 0){ /* caso o processo seja o filho, analisa a primeira metade do vetor numbers e determina o número de vezes que o valor n foi encontrado nessa metade */
 		for (i = ARRAY_SIZE/2; i < ARRAY_SIZE-1; i++){
 			if (n == numbers[i]){
 				ntimes++;
 			}
 		}
 		printf("Number of times parent process found n: %d\n", ntimes);
-		waitpid(p1, &status, 0);
+		waitpid(p1, &status, 0); /*aguarda que o processo filho acabe, uma vez que necessita do valor retornado por ele para calcular o resultado final */
         if (WIFEXITED(status)) {
             ntimes += WEXITSTATUS(status);
         }
-		printf("Number of times child process found n: %d\n", WEXITSTATUS(status));
-		printf("Number of times n was found: %d\n", ntimes);
+		printf("Number of times child process found n: %d\n", WEXITSTATUS(status)); /*printa o número de vezes que o processo filho encontrou o valor n na primeira metade do vetor numbers */
+		printf("Number of times n was found: %d\n", ntimes); /*printa o valor total de vezes que o valor n foi encontrado no vetor numbers */
 	}
 } 
 

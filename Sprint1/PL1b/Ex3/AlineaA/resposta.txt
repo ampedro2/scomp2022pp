@@ -1,0 +1,1 @@
+Para tratamento de processos, a melhor função e mais completa é a sigaction, uma vez que permite ao processo que recebeu o sinal, por exemplo, o conhecimento do processo que enviou o sinal.

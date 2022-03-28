@@ -11,9 +11,9 @@ int main ()
 	int i, j;
 	
 	for (i = 0; i < 10; i++){
-		array[i] = fork();
+		array[i] = fork(); /* criação do processo filho (10 vezes devido ao ciclo) */
 		
-		if (array[i] == 0){
+		if (array[i] == 0){ /* cada processo filho irá printar 100 valores */
 			for (j = i*100+1; j < (i+1)*100+1; j++){
 				printf("%d - ", j);
 			}
@@ -23,7 +23,7 @@ int main ()
 	}
 	
 	for (i = 0; i < 10; i++){
-		wait(NULL);
+		wait(NULL); /* O processo pai só termina quando todos os seus processos filhos terminarem */
 	}
 				
 } 
