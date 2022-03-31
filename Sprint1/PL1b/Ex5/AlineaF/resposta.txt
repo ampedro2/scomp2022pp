@@ -1,0 +1,1 @@
+Ao executar o comando jobs, irá mostrar a lista (por ordem) de processos 'parados'. Ao executar o comando kill %1 irá terminar o primeiro processo dessa lista

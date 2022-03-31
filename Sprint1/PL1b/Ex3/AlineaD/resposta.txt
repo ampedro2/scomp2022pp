@@ -1,0 +1,1 @@
+Não, pois ao aceder a variáveis estáticas e globais poderemos estar a corromper a sua informação.

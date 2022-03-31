@@ -1,0 +1,3 @@
+Enquanto que a função write é uma função do kernel (camada de software que oferece funções simples) e é usada apenas para imprimir a string pretendida,
+o printf é uma função que não consta no kernel (embora utilize a função write), espera receber por parametro a string e formato e é nesse processo que poderá
+enviar para a função write alguma função adicional não desejada, que então é imprimida.

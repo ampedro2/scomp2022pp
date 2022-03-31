@@ -1,0 +1,1 @@
+O programa terminou pois o CTRL-\ envia o sinal SIGQUIT ao programa e, sendo que ele não tem nenhuma instrução aquando da receção desse mesmo sinal, o programa para a sua execução.
