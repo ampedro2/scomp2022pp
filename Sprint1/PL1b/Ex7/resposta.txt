@@ -1,0 +1,1 @@
+Os sinais com os números 9 e 19 (SIGKILL e SIGSTOP respetivamente) não foram bloqueados pois estes dois sinais não podem ser bloqueados e/ou ignorados. 
