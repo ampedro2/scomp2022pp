@@ -19,6 +19,7 @@ void taskA() {
 		sleep(1);
 		printf("%d second(s).\n", i);
 	}
+	var = 1;
 }
 
 void taskB() {
@@ -39,7 +40,6 @@ int main(int argc, char *argv[]){
 	
 	if (p>0){ /* Caso seja o pai, a taskA é executada e é enviado o sinal com o número 10 (SIGUSR1) para o filho, cujo pid está guardado na variável p */
 		taskA();
-		var = 1;
 		kill(p, 10);
 	}
 	else if (p == 0){ /* Caso seja o filho, declara-se uma função handle para o reconhecimento do sinal SIGUSR1 */
