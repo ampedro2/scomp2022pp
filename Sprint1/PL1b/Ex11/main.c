@@ -17,8 +17,7 @@ typedef struct {
 void inicializeArray(comando *array){
 	for (int i = 0; i < CMD; i++){ /* preenchimento do array com os comandos e os seus tempos máximos de execução (random) */
 		strcpy(array[i].cmd,"./ProgramTest");
-		time_t t;
-		srand((int)time(&t) % getpid());
+		srand(NULL);
 		array[i].tempo = rand() % 10;
 		printf("%s - %d second(s)\n", array[i].cmd, array[i].tempo);
 	}
@@ -31,8 +30,6 @@ int main(int argc, char *argv[]){
 	inicializeArray(array);
 	for (int i = 0; i < CMD; i++){
 		procid = fork();
-		time_t t;
-		srand((int)time(&t) % getpid());
 		if (procid > 0){
 			waitpid(procid, NULL, 0);
 		}
