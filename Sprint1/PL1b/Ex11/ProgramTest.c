@@ -21,7 +21,8 @@ int main(int argc, char **argv)
 	sigaction(SIGALRM, &act, NULL);
     
 	printf("ProgramTest\n");
-	srand ( time(NULL) );
+	time_t t;
+	srand((int)time(&t) % getpid());
 	int time = rand() % 10;
 	printf("%d second(s)\n", time);
 	sleep(time); /* caso o valor time seja maior que o tempo estipulado anteriormente, é recebido o sinal ALRM */
