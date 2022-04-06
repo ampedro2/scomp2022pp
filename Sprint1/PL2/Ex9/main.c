@@ -55,7 +55,7 @@ int main(void){
 		else{
 			waitpid(procid, &status, 0); /* Espera e verifica se a conclusão do processo ocorreu normalmente */ 
 			if (!WIFEXITED(status)) {
-                perror("Pipe up failed\n");
+                perror("Process not finished\n");
                 return 0;
             }
 		}
