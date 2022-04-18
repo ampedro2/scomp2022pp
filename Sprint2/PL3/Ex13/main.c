@@ -52,8 +52,8 @@ int main(int argc, char *argv[]) {
 			   printf("Error! opening file");
 			   exit(1);
 			}
-
-			fscanf(file,"%[^\n]", &strinfOfTheFile);
+			
+			fgets(strinfOfTheFile, sizeof(strinfOfTheFile), file);
 			
 			for (j = 0; j < strlen(strinfOfTheFile) - strlen(shared_data->wordToSearch[i])+1; j++){
 				oc = 0;
