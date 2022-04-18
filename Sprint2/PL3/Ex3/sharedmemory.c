@@ -31,7 +31,6 @@ int main(int argc, char *argv[]) {
 	pid_t procid;
 	double inicio, final;
 	inicializeArray(array);
-	shm_unlink("/ex3");
 	fd = shm_open("/ex3", O_CREAT|O_EXCL|O_RDWR, S_IRUSR|S_IWUSR);
 	if(fd == -1){
 		printf("Erro a abrir");
