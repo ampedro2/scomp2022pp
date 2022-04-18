@@ -21,7 +21,6 @@ int main(int argc, char *argv[]) {
 	int fd, data_size = sizeof(numeros), r, i, status;
 	numeros *shared_data;
 	pid_t procid;
-	shm_unlink("/ex5");
 	fd = shm_open("/ex5", O_CREAT|O_EXCL|O_RDWR, S_IRUSR|S_IWUSR);
 	if(fd == -1){
 		printf("Erro a abrir");
