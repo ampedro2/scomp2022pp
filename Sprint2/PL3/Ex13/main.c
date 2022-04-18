@@ -53,14 +53,16 @@ int main(int argc, char *argv[]) {
 			   exit(1);
 			}
 			
-			fgets(strinfOfTheFile, sizeof(strinfOfTheFile), file);
-			
-			for (j = 0; j < strlen(strinfOfTheFile) - strlen(shared_data->wordToSearch[i])+1; j++){
-				oc = 0;
-				for(k = 0; k < strlen(shared_data->wordToSearch[i]); k++){
-					if(strinfOfTheFile[j+k] == shared_data->wordToSearch[i][k]) oc++;
+			while(!feof(file)){
+				while(fgets(strinfOfTheFile, sizeof(strinfOfTheFile), file)){
+					for (j = 0; j < strlen(strinfOfTheFile) - strlen(shared_data->wordToSearch[i])+1; j++){
+						oc = 0;
+						for(k = 0; k < strlen(shared_data->wordToSearch[i]); k++){
+							if(strinfOfTheFile[j+k] == shared_data->wordToSearch[i][k]) oc++;
+						}
+						if(oc == strlen(shared_data->wordToSearch[i])) oct++;
+					}
 				}
-				if(oc == strlen(shared_data->wordToSearch[i])) oct++;
 			}
 			
 			shared_data->numberOfOccurences[i] = oct;
