@@ -1,0 +1,3 @@
+Quantos menos filhos tivermos, mais rápido o programa vai ficar.
+
+Na figura 1 o NUM_ELEMENTS = 1000, na figura 2 o NUM_ELEMENTS = 10000
