@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 
   if (pid > 0) {
     int ronda = 0;
-    while(ronda < 1){
+    while(ronda < 3){
           printf("\nRonda %d\n", ronda+1);
           do {
             while(shared_data->canWrite == 0){}
