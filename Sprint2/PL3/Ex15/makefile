@@ -8,5 +8,5 @@ main.o: main.c
 clean:
 		rm -f *.o ex15
 
-run: ex14
-		./ex14
+run: ex15
+		./ex15
