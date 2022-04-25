@@ -19,7 +19,6 @@ typedef struct{
 } circularBuffer;
 
 int main(int argc, char *argv[]) {
-	int i;
 	
 	shm_unlink("/ex14");
 	int fd;
@@ -60,9 +59,6 @@ int main(int argc, char *argv[]) {
 			while(shared_data->canWrite == 0){}
 			shared_data->realIndex=0;
 			shared_data->lastValue = shared_data->array[9];
-			for (i = 0; i < 10; i++){
-				shared_data->array[i] = 0;
-			}
 			ronda++;
 		}
 		shared_data->canRead = 1;
