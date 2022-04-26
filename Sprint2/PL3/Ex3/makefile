@@ -1,14 +1,11 @@
-all: pipe sharedmemory
+ex03: main.o
+		gcc main.o -o ex03 -lrt
 
-pipe: pipe.c
-	gcc -lrt -lm -Wall -g -o pipe pipe.c
-
-sharedmemory: sharedmemory.c
-	gcc -lrt -lm -Wall -g -o sharedmemory sharedmemory.c
+main.o: main.c
+		gcc -g -Wall -c main.c -o main.o -lrt
 
 clean:
-	rm -f pipe sharedmemory
+		rm -f *.o ex03
 
-run: pipe sharedmemory
-	./pipe
-	./sharedmemory
+run: ex03
+		./ex03
