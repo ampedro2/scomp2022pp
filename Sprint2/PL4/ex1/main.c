@@ -60,14 +60,12 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	
-	if (sem_close(sem) == -1)
-    {
+	if (sem_close(sem) == -1){
         perror("Error closing the semaphore\n");
         exit(0);
     }
 
-    if (sem_unlink("/Ex1") == -1)
-    {
+    if (sem_unlink("/Ex1") == -1){
         perror("Error removing the semaphore.\n");
         exit(0);
     }
