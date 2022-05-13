@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
 			srand(time( NULL ));
 			num = rand() % 4 + 1;
 			printf("The process %d is waiting %d second(s).\n", getpid(), num);
-			sleep(num); // Permite o processo saber onde escrever cada mensagem
+			sleep(num); 
 			sem_post(sem); // Desbloqueia o acesso dos outros processos à memória partilhada
 			exit(1);
 		}
