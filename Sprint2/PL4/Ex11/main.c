@@ -12,12 +12,13 @@
 #include <wait.h>
 #include <string.h>
 
-#define NUM_PROCESSES 500
+#define NUM_PROCESSES 400
 #define MAXIMUM_CAPACITY 200
 
 typedef struct {
 	int num_passengers_flow;
 	int empty_seats;
+	int num_passengers_stay;
 } train;
 
 int main(int argc, char *argv[]) {
@@ -35,11 +36,19 @@ int main(int argc, char *argv[]) {
 	shared_data = (train *)mmap(NULL, data_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
 	
 	shared_data->num_passengers_flow = 0;
-	shared_data->empty_seats = 200;
+	shared_data->empty_seats = MAXIMUM_CAPACITY;
+	shared_data->num_passengers_stay = 0;
 	
-	sem_t *sem_flow = sem_open("Ex11sem", O_CREAT|O_EXCL,0644, 0); //semáforo que controla o fluxo de passageiros no metro
-	
+	sem_t *sem_flow = sem_open("Ex11sem", O_CREAT|O_EXCL,0644, 3); //semáforo que controla o fluxo de passageiros no metro
+	sem_t *sem_excl = sem_open("Ex11semexcl", O_CREAT|O_EXCL,0644, 1); //semáforo que controla a mutual exclusion
+	sem_t *sem_train = sem_open("Ex11semtrain", O_CREAT|O_EXCL,0644, MAXIMUM_CAPACITY); //semáforo que controla a mutual exclusion
+		
 	if(sem_flow == -1){
+		perror("Error in semaphore creation.\n");
+		exit(0);
+	}
+	
+	if(sem_excl == -1){
 		perror("Error in semaphore creation.\n");
 		exit(0);
 	}
@@ -51,47 +60,29 @@ int main(int argc, char *argv[]) {
 			exit(0);
 		}
 		else if (procid == 0){
-			srand(getpid());
-			num = rand() % 2 + 1;
-			if (num == 1){
-				sem_wait(sem_flow); //espera que alguma porta esteja livre para poder sair no comboio
-				if ( shared_data->empty_seats >= MAXIMUM_CAPACITY ){ //caso seja atribuida a funcao de sair do metro ao processo sendo que este está vazio, é printada uma mensagem de aviso
-					printf("Train is empty!\n");
-				} else{
-					printf("The process %d leaved the train.\n", getpid());
-					printf("Number of occupied seats: %d\n", MAXIMUM_CAPACITY-shared_data->empty_seats);
-					shared_data->empty_seats++;
-				}
-				sem_post(sem_flow); 
-				
-			}
-			else if (num == 2){
-				sem_wait(sem_flow); //espera que alguma porta esteja livre para poder entrar no comboio
-				if ( shared_data->empty_seats <= 0 ){ //caso seja atribuida a funcao de entrar do metro ao processo sendo que este está cheio, é printada uma mensagem de aviso
-					printf("Train maximum capacity reached. Impossible to enter!\n");
-				} else{
-					printf("The process %d entered the train.\n", getpid());
-					printf("Number of occupied seats: %d\n", MAXIMUM_CAPACITY-shared_data->empty_seats);
-					shared_data->empty_seats--;
-				}
-				sem_post(sem_flow);
-			}
-			exit(1);
-		}
-	}
-	
-	for (i = 0; i < 3; i++){
-		procid = fork();
-		if(procid == -1){
-			perror("Error in process creation.\n");
-			exit(0);
-		}
-		else if (procid == 0){
-			while ( shared_data->num_passengers_flow < NUM_PROCESSES ){
-				sem_post(sem_flow); //desbloqueia a respetiva porta
-				sleep(0.05);
-				shared_data->num_passengers_flow++;
+			sem_wait(sem_train);
+			sem_wait(sem_flow); //espera que alguma porta esteja livre para poder sair no comboio
+			sem_wait(sem_excl);
+			printf("The process %d entered the train.\n", getpid());
+			shared_data->empty_seats--;
+			printf("Number of occupied seats: %d\n", MAXIMUM_CAPACITY-shared_data->empty_seats);
+			sem_post(sem_excl);
+			sem_post(sem_flow);
+			
+			sleep(0.02);
+			
+			if (shared_data->num_passengers_stay >= 50){
 				sem_wait(sem_flow);
+				sem_wait(sem_excl);
+				sem_post(sem_train);
+				printf("The process %d leaved the train.\n", getpid());
+				shared_data->empty_seats++;
+				printf("Number of occupied seats: %d\n", MAXIMUM_CAPACITY-shared_data->empty_seats);
+				sem_post(sem_flow);
+				sem_post(sem_excl);
+			}
+			else{
+				shared_data->num_passengers_stay++;
 			}
 			exit(1);
 		}
@@ -107,6 +98,26 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (sem_unlink("Ex11sem") == -1){
+		perror("Error removing the semaphore.\n");
+		exit(0);
+	}
+	
+	if (sem_close(sem_excl) == -1){
+		perror("Error closing the semaphore\n");
+		exit(0);
+	}
+
+	if (sem_unlink("Ex11semexcl") == -1){
+		perror("Error removing the semaphore.\n");
+		exit(0);
+	}
+	
+	if (sem_close(sem_train) == -1){
+		perror("Error closing the semaphore\n");
+		exit(0);
+	}
+
+	if (sem_unlink("Ex11semtrain") == -1){
 		perror("Error removing the semaphore.\n");
 		exit(0);
 	}

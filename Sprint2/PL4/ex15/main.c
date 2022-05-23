@@ -18,6 +18,7 @@
 
 typedef struct {
 	int num_visitors[NUM_ROOMS];
+	int isInShow[NUM_ROOMS];
 	int visitors_total;
 } ShowRoom;
 
@@ -40,22 +41,25 @@ int main(int argc, char *argv[]) {
 	shared_data->num_visitors[1] = 0;
 	shared_data->num_visitors[2] = 0;
 	shared_data->num_visitors[3] = 0;
+	shared_data->isInShow[0] = 0;
+	shared_data->isInShow[1] = 0;
+	shared_data->isInShow[2] = 0;
+	shared_data->isInShow[3] = 0;
 	shared_data->visitors_total = 0;
 	
 	sem_t *sem[NUM_ROOMS];
-	sem_t *semIsInShow[NUM_ROOMS];
 	
-	for (i = 0; i < NUM_ROOMS; i++){
-		sprintf(name, "Ex15sem%d", i);
-		sem[i] = sem_open(name, O_CREAT|O_EXCL,0644, 5);
-		if(sem[i] == -1){
+	sem_t *sem_excl = sem_open("Ex15semexcl", O_CREAT|O_EXCL,0644, 1);
+	
+	if(sem_excl == -1){
 			perror("Error in semaphore creation.\n");
 			exit(0);
 		}
-		
-		sprintf(name, "Ex15sem%dIsFull", i);
-		semIsInShow[i] = sem_open(name, O_CREAT|O_EXCL,0644, 1);
-		if(semIsInShow[i] == -1){
+	
+	for (i = 0; i < NUM_ROOMS; i++){
+		sprintf(name, "Ex15sem%d", i);
+		sem[i] = sem_open(name, O_CREAT|O_EXCL,0644, MAXIMUM_CAPACITY);
+		if(sem[i] == -1){
 			perror("Error in semaphore creation.\n");
 			exit(0);
 		}
@@ -70,18 +74,23 @@ int main(int argc, char *argv[]) {
 		else if (procid == 0){
 			srand(getpid());
 			num = rand() % 4;
-			sem_wait(semIsInShow[num]);
-			sem_post(semIsInShow[num]);
-			if (shared_data->num_visitors[num] >= MAXIMUM_CAPACITY){
-				printf("The room %d is full.\n", num+1);
-			}
-			else{
+			while(1){
 				sem_wait(sem[num]);
-				printf("The process %d entered in the room %d\n", i+1, num+1);
-				shared_data->num_visitors[num]++;
-				shared_data->visitors_total++;
+				if (shared_data->isInShow[num] == 0){
+					sem_wait(sem_excl);
+					printf("The process %d entered in the room %d\n", i+1, num+1);
+					shared_data->num_visitors[num]++;
+					shared_data->visitors_total++;
+					sem_post(sem_excl);
+					sleep(1);
+					sem_post(sem[num]);
+					exit(1);
+				}
+				else{
+					printf("The process %d tried to enter in the room %d, but it was on show.\n", i+1, num+1);
+					sleep(1);
+				}
 				sem_post(sem[num]);
-				exit(1);
 			}
 		}
 	}
@@ -93,14 +102,16 @@ int main(int argc, char *argv[]) {
 			exit(0);
 		}
 		else if (procid == 0){
-			while ( shared_data->visitors_total <= NUM_PROCESSES ){
+			while ( shared_data->visitors_total < NUM_PROCESSES ){
 				sleep(1);
-				sem_wait(semIsInShow[i]);
-				printf("The show in the room %d is starting...\n", i+1);
+				shared_data->isInShow[i]++;
+				printf("The show in the room %d is starting with %d visitors...\n", i+1, shared_data->num_visitors[i]);
 				sleep(5);
 				printf("The show in the room %d ended.\n", i+1);
-				shared_data->num_visitors[num] = 0;
-				sem_post(semIsInShow[i]);
+				sem_wait(sem_excl);
+				shared_data->isInShow[i]--;
+				shared_data->num_visitors[i] = 0;
+				sem_post(sem_excl);
 			}
 			exit(1);
 		}
@@ -121,17 +132,16 @@ int main(int argc, char *argv[]) {
 			perror("Error removing the semaphore.\n");
 			exit(0);
 		}
-		
-		if (sem_close(semIsInShow[i]) == -1){
-			perror("Error closing the semaphore\n");
-			exit(0);
-		}
-		
-		sprintf(name, "Ex15sem%dIsFull", i);
-		if (sem_unlink(name) == -1){
-			perror("Error removing the semaphore.\n");
-			exit(0);
-		}
+	}
+	
+	if (sem_close(sem_excl) == -1){
+		perror("Error closing the semaphore\n");
+		exit(0);
+	}
+	
+	if (sem_unlink("Ex15semexcl") == -1){
+		perror("Error removing the semaphore.\n");
+		exit(0);
 	}
 	
 	r = munmap(shared_data, data_size);
